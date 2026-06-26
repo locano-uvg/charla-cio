@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Bienvenida · CIO for a Day · UVG</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #04602f;
+        color: #fff;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 2.2rem 1.2rem 3rem;
+        overflow-x: hidden;
+      }
+
+      /* Partículas de fondo */
+      #particles-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* ── Header ── */
+      .header {
+        text-align: center;
+        margin-bottom: 1.6rem;
+        animation: fadeInDown 0.7s ease both;
+      }
+
+      .tag {
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        opacity: 0;
+        margin-bottom: 0.7rem;
+        animation: fadeIn 0.5s ease 0.35s both;
+        background: rgba(255, 255, 255, 0.12);
+        display: inline-block;
+        padding: 0.28rem 0.9rem;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      h1 {
+        font-size: 1.9rem;
+        font-weight: 800;
+        line-height: 1.18;
+        margin-bottom: 0.55rem;
+        opacity: 0;
+        animation: fadeInUp 0.65s ease 0.55s both;
+        letter-spacing: -0.01em;
+      }
+
+      h1 .accent {
+        color: #7effc0;
+        display: inline-block;
+        position: relative;
+      }
+
+      h1 .accent::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #7effc0;
+        border-radius: 1px;
+        animation: underlineGrow 0.5s ease 1.4s both;
+      }
+
+      .sub {
+        font-size: 0.9rem;
+        opacity: 0;
+        animation: fadeIn 0.5s ease 0.9s both;
+        line-height: 1.5;
+      }
+
+      .sub em {
+        color: #7effc0;
+        font-style: normal;
+        font-weight: 600;
+      }
+
+      /* ── Badge "en vivo" ── */
+      .live-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 20px;
+        padding: 0.38rem 0.85rem;
+        font-size: 0.78rem;
+        margin-bottom: 1.7rem;
+        opacity: 0;
+        animation: fadeIn 0.5s ease 1.1s both;
+        backdrop-filter: blur(4px);
+      }
+
+      .live-dot {
+        width: 7px;
+        height: 7px;
+        background: #4dff9b;
+        border-radius: 50%;
+        flex-shrink: 0;
+        animation: pulseDot 1.6s ease-in-out infinite;
+        box-shadow: 0 0 0 0 rgba(77, 255, 155, 0.6);
+      }
+
+      /* ── Cards ── */
+      .card {
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 12px;
+        padding: 1.2rem 1.4rem;
+        width: 100%;
+        max-width: 420px;
+        margin-bottom: 0.9rem;
+        opacity: 0;
+        animation: fadeInUp 0.55s ease both;
+        backdrop-filter: blur(6px);
+        transition: border-color 0.2s, background 0.2s;
+      }
+
+      .card:nth-of-type(1) {
+        animation-delay: 1.25s;
+      }
+      .card:nth-of-type(2) {
+        animation-delay: 1.45s;
+      }
+
+      .card:hover {
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .card h2 {
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0.55;
+        margin-bottom: 0.8rem;
+        font-weight: 700;
+      }
+
+      .agenda-item {
+        display: flex;
+        gap: 0.8rem;
+        align-items: flex-start;
+        padding: 0.5rem 0.3rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 0.87rem;
+        line-height: 1.4;
+        border-radius: 4px;
+        transition: background 0.15s, padding-left 0.15s;
+      }
+
+      .agenda-item:last-child {
+        border-bottom: none;
+      }
+
+      .agenda-item:hover {
+        background: rgba(255, 255, 255, 0.06);
+        padding-left: 0.5rem;
+      }
+
+      .time {
+        font-variant-numeric: tabular-nums;
+        opacity: 0.5;
+        min-width: 3.4rem;
+        font-size: 0.74rem;
+        padding-top: 0.15rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        flex-shrink: 0;
+      }
+
+      .item-body {
+        flex: 1;
+      }
+
+      /* ── Tarjeta speaker ── */
+      .speaker-card {
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 12px;
+        padding: 1rem 1.4rem;
+        width: 100%;
+        max-width: 420px;
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        opacity: 0;
+        animation: fadeInUp 0.55s ease 1.65s both;
+      }
+
+      .avatar {
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .speaker-info {
+        font-size: 0.85rem;
+      }
+
+      .speaker-name {
+        font-weight: 700;
+      }
+
+      .speaker-sub {
+        font-size: 0.72rem;
+        opacity: 0.6;
+        margin-top: 0.15rem;
+      }
+
+      /* ── Reloj ── */
+      .clock {
+        font-size: 0.82rem;
+        opacity: 0;
+        animation: fadeIn 0.5s ease 1.85s both;
+        margin-top: 1.1rem;
+        background: rgba(0, 0, 0, 0.15);
+        padding: 0.35rem 0.8rem;
+        border-radius: 20px;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.03em;
+      }
+
+      /* ── Keyframes ── */
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+      }
+
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(22px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-14px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes underlineGrow {
+        from { width: 0; }
+        to   { width: 100%; }
+      }
+
+      @keyframes pulseDot {
+        0%, 100% { transform: scale(1);   box-shadow: 0 0 0 0   rgba(77, 255, 155, 0.6); }
+        50%       { transform: scale(1.3); box-shadow: 0 0 0 5px rgba(77, 255, 155, 0); }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="content">
+      <div class="header">
+        <p class="tag">CIO for a Day · UVG · julio 2026</p>
+        <h1>Ciberseguridad,<br /><span class="accent">Ética</span> y el Rol del CIO</h1>
+        <p class="sub">
+          Bienvenidos. Hoy descubrirás cómo <em>un CIO protege</em> lo que más importa.
+        </p>
+      </div>
+
+      <div class="live-badge">
+        <span class="live-dot"></span>
+        Sesión en vivo · Sábado 11 de julio de 2026
+      </div>
+
+      <div class="card">
+        <h2>Agenda del día</h2>
+        <div class="agenda-item">
+          <span class="time">Bloque 0</span>
+          <span class="item-body">Gancho inicial &amp; actividad de apertura</span>
+        </div>
+        <div class="agenda-item">
+          <span class="time">Bloque 1</span>
+          <span class="item-body">¿Qué hace realmente un CIO? — responsabilidades éticas</span>
+        </div>
+        <div class="agenda-item">
+          <span class="time">Bloque 2</span>
+          <span class="item-body">Ciberseguridad: lo que ya te afecta — phishing, deepfakes, contraseñas</span>
+        </div>
+        <div class="agenda-item">
+          <span class="time">Pausa</span>
+          <span class="item-body">5 minutos activos</span>
+        </div>
+        <div class="agenda-item">
+          <span class="time">Bloque 3</span>
+          <span class="item-body">Tu proyecto en el mundo real — checklist + trabajo en equipo</span>
+        </div>
+        <div class="agenda-item">
+          <span class="time">Cierre</span>
+          <span class="item-body">Q&amp;A abierto</span>
+        </div>
+      </div>
+
+      <div class="speaker-card">
+        <div class="avatar">👨‍💻</div>
+        <div class="speaker-info">
+          <div class="speaker-name">Ing. Ludwing Cano</div>
+          <div class="speaker-sub">Universidad del Valle de Guatemala</div>
+        </div>
+      </div>
+
+      <div class="clock" id="clock">--:--:--</div>
+    </div>
+
+    <script>
+      /* ── Reloj en vivo ── */
+      function updateClock() {
+        var now = new Date();
+        var h = String(now.getHours()).padStart(2, "0");
+        var m = String(now.getMinutes()).padStart(2, "0");
+        var s = String(now.getSeconds()).padStart(2, "0");
+        document.getElementById("clock").textContent = h + ":" + m + ":" + s;
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      /* ── Partículas flotantes ── */
+      (function () {
+        var canvas = document.getElementById("particles-canvas");
+        var ctx = canvas.getContext("2d");
+        var particles = [];
+        var N = 55;
+
+        function resize() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resize);
+        resize();
+
+        for (var i = 0; i < N; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 2.2 + 0.6,
+            dx: (Math.random() - 0.5) * 0.35,
+            dy: -(Math.random() * 0.55 + 0.15),
+            alpha: Math.random() * 0.35 + 0.08,
+          });
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach(function (p) {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(168, 240, 200, " + p.alpha + ")";
+            ctx.fill();
+            p.x += p.dx;
+            p.y += p.dy;
+            if (p.y < -8) {
+              p.y = canvas.height + 8;
+              p.x = Math.random() * canvas.width;
+            }
+            if (p.x < -8 || p.x > canvas.width + 8) {
+              p.x = p.x < 0 ? canvas.width + 4 : -4;
+            }
+          });
+          requestAnimationFrame(draw);
+        }
+        draw();
+      })();
+
+      /* ── Ping silencioso al Apps Script para contar visitas ── */
+      var STATS_URL =
+        "https://script.google.com/macros/s/AKfycby5lZMFkpe-9e0WaePrs8EJO-jW1TdNhwlhV5syPWnXU3WyfWpwmGhupc00KZa2ky46/exec";
+      if (STATS_URL.indexOf("TU_APPS_SCRIPT") === -1) {
+        fetch(STATS_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type: "safe_hit" }),
+        }).catch(function () {});
+      }
+    </script>
+  </body>
+</html>

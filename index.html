@@ -1,0 +1,1458 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ciberseguridad, Ética y el Rol del CIO · Ing. Ludwing Cano</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="reveal/reveal.min.css" />
+    <link rel="stylesheet" href="reveal/moon.min.css" />
+    <style>
+      .reveal-viewport {
+        background-color: #04602f;
+      }
+      .reveal {
+        color: #fff;
+      }
+      .footer {
+        position: absolute;
+        bottom: 0;
+        text-align: center;
+        height: 100px;
+        background-color: #3b3a3c;
+        width: 100%;
+      }
+      .bloque-tag {
+        font-size: 0.5em;
+        letter-spacing: 0.05em;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        padding: 2px 12px;
+        display: inline-block;
+        margin-bottom: 0.4em;
+      }
+      /* Quiz */
+      .quiz-wrap {
+        max-width: 680px;
+        margin: 0 auto;
+      }
+      .quiz-question {
+        font-size: 0.75em;
+        margin-bottom: 0.8em;
+      }
+      .quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em;
+      }
+      .quiz-btn {
+        background: #0a3d1f;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        color: #fff;
+        padding: 0.5em 1em;
+        font-size: 0.6em;
+        cursor: pointer;
+        text-align: left;
+      }
+      .quiz-btn:hover {
+        background: #0f5228;
+      }
+      .quiz-btn.correct {
+        border-color: #fff;
+        background: #0f5228;
+      }
+      .quiz-btn.wrong {
+        border-color: rgba(255, 255, 255, 0.3);
+        opacity: 0.5;
+      }
+      .quiz-feedback {
+        margin-top: 0.6em;
+        font-size: 0.6em;
+        min-height: 1.4em;
+      }
+      /* Dilema */
+      .dilema-opciones {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8em;
+        margin-top: 0.8em;
+      }
+      .dilema-btn {
+        background: #0a3d1f;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        color: #fff;
+        padding: 0.8em;
+        font-size: 0.55em;
+        cursor: pointer;
+        text-align: left;
+      }
+      .dilema-btn:hover {
+        background: #0f5228;
+      }
+      .dilema-btn.selected {
+        border-color: #fff;
+        background: #0f5228;
+      }
+      .dilema-feedback {
+        font-size: 0.55em;
+        margin-top: 0.8em;
+        min-height: 1.5em;
+      }
+      /* Checklist */
+      .checklist {
+        list-style: none;
+        padding: 0;
+        margin: 0 auto;
+        max-width: 720px;
+      }
+      .checklist li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.7em;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0.5em 0.3em;
+        font-size: 0.55em;
+        cursor: pointer;
+        line-height: 1.5;
+      }
+      .checklist li.done {
+        opacity: 0.7;
+      }
+      .check-icon {
+        font-family: monospace;
+        flex-shrink: 0;
+        font-size: 1.1em;
+      }
+      .check-prog {
+        margin-top: 0.4em;
+        font-size: 0.6em;
+        color: rgba(255, 255, 255, 0.6);
+        text-align: center;
+      }
+      /* Timer */
+      .timer-display {
+        font-size: 4em;
+        font-weight: bold;
+        color: #fff;
+        letter-spacing: 0.05em;
+        margin: 0.2em 0;
+      }
+      .timer-display.warning {
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .timer-bar-wrap {
+        background: rgba(255, 255, 255, 0.2);
+        height: 6px;
+        margin: 0.4em auto;
+        max-width: 500px;
+        overflow: hidden;
+      }
+      .timer-bar {
+        height: 6px;
+        background: #fff;
+        transform-origin: left;
+      }
+      .timer-controls {
+        display: flex;
+        gap: 0.8em;
+        justify-content: center;
+        margin-top: 0.6em;
+      }
+      .timer-btn {
+        background: #0a3d1f;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        color: #fff;
+        padding: 0.3em 1.2em;
+        font-size: 0.6em;
+        cursor: pointer;
+      }
+      .timer-btn:hover {
+        background: #0f5228;
+      }
+      .timer-task {
+        font-size: 0.55em;
+        color: rgba(255, 255, 255, 0.8);
+        max-width: 600px;
+        margin: 0.6em auto 0;
+        text-align: left;
+      }
+      .timer-task li {
+        margin-bottom: 0.3em;
+      }
+      /* Stat cards */
+      .stat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.7em;
+        max-width: 700px;
+        margin: 0.6em auto 0;
+        font-size: 0.6em;
+      }
+      .stat-card {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 0.7em 0.8em;
+        text-align: left;
+      }
+      .stat-card .stat-num {
+        font-size: 2em;
+        font-weight: bold;
+        display: block;
+        line-height: 1.1;
+      }
+      /* Responsabilidad card */
+      .resp-card {
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        padding: 1.2em 1.6em;
+        max-width: 620px;
+        margin: 0.8em auto 0;
+        text-align: left;
+        font-size: 0.68em;
+        line-height: 1.6;
+      }
+      /* Pregunta etica highlight */
+      .pregunta-etica {
+        font-size: 0.88em;
+        font-weight: bold;
+        max-width: 640px;
+        margin: 0 auto;
+        line-height: 1.5;
+      }
+      .pregunta-etica-nota {
+        font-size: 0.62em;
+        margin-top: 0.9em;
+        color: rgba(255, 255, 255, 0.75);
+      }
+      /* QR Activity */
+      .qr-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5em;
+        max-width: 560px;
+        margin: 0.6em auto;
+      }
+      .qr-card {
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        padding: 1em 0.8em 0.8em;
+        text-align: center;
+        font-size: 0.55em;
+      }
+      .qr-card canvas,
+      .qr-card img {
+        display: block;
+        margin: 0 auto 0.6em;
+        border-radius: 4px;
+      }
+      .qr-placeholder {
+        width: 140px;
+        height: 140px;
+        border: 2px dashed rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0.6em;
+        font-size: 0.85em;
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .qr-note {
+        font-size: 0.4em;
+        color: rgba(255, 255, 255, 0.45);
+        margin-top: 0.6em;
+      }
+      /* QR Reveal Stats */
+      .reveal-stat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1em;
+        max-width: 580px;
+        margin: 0.6em auto;
+        font-size: 0.6em;
+      }
+      .reveal-stat {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 0.9em;
+        text-align: center;
+      }
+      .reveal-stat .rnum {
+        font-size: 2.8em;
+        font-weight: bold;
+        display: block;
+        line-height: 1.1;
+      }
+      /* HIBP */
+      .hibp-link {
+        font-size: 1.3em;
+        font-weight: bold;
+        color: #fff;
+        text-decoration: underline;
+        display: inline-block;
+        margin: 0.4em 0 0.6em;
+        letter-spacing: 0.02em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <!-- ═══════════════════════════════════════════════
+             PORTADA
+        ═══════════════════════════════════════════════ -->
+        <section>
+          <br />
+          <p class="bloque-tag">CIO for a Day · UVG · julio 2026</p>
+          <h2 style="line-height: 1.2">
+            Ciberseguridad,<br />Ética y el Rol del CIO
+          </h2>
+          <p style="font-size: 0.6em; margin-top: 1em; color: #fff">
+            Ing. Ludwing Cano<br />Sábado 11 de julio de 2026
+          </p>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             ACTIVIDAD QR — GANCHO INICIAL
+        ═══════════════════════════════════════════════ -->
+        <section data-state="qr-activity">
+          <h3 style="font-size: 0.9em">Antes de empezar</h3>
+          <p style="font-size: 0.6em; margin-bottom: 0.4em">
+            Escanea <strong>uno</strong> de estos dos QRs con tu celular.
+          </p>
+          <div class="qr-grid">
+            <div class="qr-card">
+              <div id="qr-a">
+                <div class="qr-placeholder">QR</div>
+              </div>
+              <p>
+                <strong>Bienvenida</strong><br />
+                Agenda y materiales de la charla
+              </p>
+            </div>
+            <div class="qr-card">
+              <div id="qr-b">
+                <div class="qr-placeholder">QR</div>
+              </div>
+              <p>
+                <strong>Registro de asistencia</strong><br />
+                Certificado de participación UVG
+              </p>
+            </div>
+          </div>
+          <p class="qr-note">Demo educativa — tienes 60 segundos</p>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             BLOQUE 0 — GANCHO
+        ═══════════════════════════════════════════════ -->
+        <section>
+          <section>
+            <h2>Levanten la mano...</h2>
+            <p style="font-size: 0.75em; margin-top: 0.6em">
+              ...si tienen Instagram, TikTok o WhatsApp
+            </p>
+          </section>
+
+          <section>
+            <h3>¿Y ahora?</h3>
+            <p style="font-size: 0.75em">
+              Mantengan la mano si alguna vez publicaron algo<br />y después
+              pensaron...
+            </p>
+            <p style="font-size: 1.1em; margin-top: 0.6em; font-style: italic">
+              "¿Por qué publiqué eso?"
+            </p>
+          </section>
+
+          <section>
+            <p style="font-size: 0.85em">Hoy hablamos exactamente de eso.</p>
+            <p style="font-size: 0.85em; margin-top: 0.5em">
+              Pero en <strong>versión profesional.</strong>
+            </p>
+            <br />
+            <p style="font-size: 0.72em">
+              En unos años,
+              <strong
+                >ustedes van a ser los que protejan<br />la información de miles
+                de personas.</strong
+              ><br />
+              Y todo empieza con lo que hacen hoy.
+            </p>
+          </section>
+
+          <section>
+            <h3>La pregunta del millón</h3>
+            <p style="font-size: 0.8em; margin-top: 0.6em">
+              ¿Qué es lo que más le preocupa a una empresa<br />
+              cuando contrata a un ingeniero de sistemas?
+            </p>
+          </section>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             BLOQUE 1 — ¿QUÉ HACE UN CIO?
+        ═══════════════════════════════════════════════ -->
+        <section>
+          <section>
+            <p class="bloque-tag">Bloque 1</p>
+            <h2>¿Qué hace<br />realmente un CIO?</h2>
+          </section>
+
+          <section>
+            <h3>No es solo el "jefe de IT"</h3>
+            <p style="font-size: 0.7em; margin-top: 0.5em">
+              El CIO —Director de Sistemas de Información— dirige<br />
+              la tecnología de toda la organización.
+            </p>
+            <br />
+            <p style="font-size: 0.7em">
+              Pero hay algo que no se dice tan seguido:<br />
+              <strong
+                >el CIO es el principal responsable ético<br />
+                de los datos de la organización.</strong
+              >
+            </p>
+          </section>
+
+          <section>
+            <h3>Imagina esto...</h3>
+            <img
+              src="./assets/tec1.jpg"
+              alt="Tecnología y datos"
+              style="width: 35%; height: 35%"
+            />
+            <p style="font-size: 0.7em; margin-top: 0.5em">
+              Eres CIO de una empresa de salud.<br />
+              En tus servidores están los expedientes médicos<br />
+              de <strong>500,000 pacientes.</strong>
+            </p>
+          </section>
+
+          <section>
+            <h3>...ahora imagina que se filtran</h3>
+            <p style="font-size: 0.78em; margin-top: 0.5em">
+              No es solo un problema técnico.
+            </p>
+            <p style="font-size: 0.78em; margin-top: 0.4em">
+              Es un problema <strong>legal, ético y humano.</strong>
+            </p>
+            <br />
+            <p style="font-size: 0.65em; font-style: italic">
+              Es como tener las llaves de la casa de todos en el vecindario.<br />
+              Todos confiaron en ti.
+            </p>
+          </section>
+
+          <!-- Responsabilidad 1 de 3 -->
+          <section>
+            <p class="bloque-tag">Responsabilidad 1 de 3</p>
+            <h3>Protección de datos</h3>
+            <div class="resp-card">
+              Garantizar que la información se use
+              <strong>solo para lo que se prometió.</strong> <br /><br />
+              <em
+                >¿Leen los permisos antes de aceptar una app?<br />
+                Eso es exactamente lo que el CIO controla a escala
+                empresarial.</em
+              >
+            </div>
+          </section>
+
+          <!-- Responsabilidad 2 de 3 -->
+          <section>
+            <p class="bloque-tag">Responsabilidad 2 de 3</p>
+            <h3>Privacidad desde el inicio</h3>
+            <div class="resp-card">
+              La seguridad se construye <strong>desde el primer día</strong>, no
+              se agrega al final. <br /><br />
+              <em
+                >Como el cifrado de extremo a extremo en WhatsApp:<br />
+                fue parte del diseño, no un parche posterior.</em
+              >
+            </div>
+          </section>
+
+          <!-- Responsabilidad 3 de 3 -->
+          <section>
+            <p class="bloque-tag">Responsabilidad 3 de 3</p>
+            <h3>Cada decisión afecta personas</h3>
+            <div class="resp-card">
+              Qué tecnología comprar, qué datos recopilar y para qué:<br />
+              <strong>todo tiene un impacto en personas reales.</strong>
+              <br /><br />
+              <em>No es un tema de software. Es un tema de personas.</em>
+            </div>
+          </section>
+
+          <!-- DILEMA INTERACTIVO -->
+          <section>
+            <h3>Dilema ético: tú decides</h3>
+            <p style="font-size: 0.6em">
+              Eres CIO del colegio. Descubriste que el sistema de notas guarda
+              las contraseñas <strong>en texto plano</strong>. Arreglarlo cuesta
+              Q8,000 que no hay en presupuesto. ¿Qué haces?
+            </p>
+            <div class="dilema-opciones" id="dilema">
+              <button class="dilema-btn" onclick="elegirDilema(this, 'a')">
+                <strong>A: Esperar al presupuesto</strong><br />
+                El riesgo existe pero el impacto es bajo. Se agenda para el
+                próximo año fiscal.
+              </button>
+              <button class="dilema-btn" onclick="elegirDilema(this, 'b')">
+                <strong>B: Reportar y documentar</strong><br />
+                Notificar a las autoridades, documentar el riesgo y buscar
+                solución provisional.
+              </button>
+              <button class="dilema-btn" onclick="elegirDilema(this, 'c')">
+                <strong>C: Reubicar fondos</strong><br />
+                Tomar recursos de otro proyecto para arreglarlo ahora.
+              </button>
+              <button class="dilema-btn" onclick="elegirDilema(this, 'd')">
+                <strong>D: Ignorarlo</strong><br />
+                Si nadie lo sabe, no hay problema.
+              </button>
+            </div>
+            <p class="dilema-feedback" id="dilema-fb"></p>
+          </section>
+
+          <section>
+            <p style="font-size: 0.85em">
+              El poder de manejar los datos de otros es enorme.
+            </p>
+            <br />
+            <p style="font-size: 0.75em">
+              Con ese poder viene una responsabilidad que<br />
+              <strong>ningún manual te enseña del todo.</strong>
+            </p>
+            <p style="font-size: 0.68em; margin-top: 0.6em">
+              Solo la práctica y la conciencia te la dan.
+            </p>
+          </section>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             BLOQUE 2 — CIBERSEGURIDAD
+        ═══════════════════════════════════════════════ -->
+        <section>
+          <section>
+            <p class="bloque-tag">Bloque 2</p>
+            <h2>Ciberseguridad:<br />lo que ya te afecta</h2>
+          </section>
+
+          <!-- Huella digital -->
+          <section>
+            <h3>Tu huella digital no se borra</h3>
+            <img
+              src="./assets/tec2.webp"
+              alt="Huella digital"
+              style="width: 35%; height: 35%"
+            />
+            <p style="font-size: 0.68em; margin-top: 0.4em">
+              ¿En cuántas plataformas tienen cuenta?<br />
+              ¿Cuántas fotos publicadas? ¿Cuántos grupos de WhatsApp?
+            </p>
+            <p style="font-size: 0.68em; margin-top: 0.4em">
+              Cuando "borran" algo, <strong>no desaparece.</strong><br />
+              Queda en servidores, respaldos y screenshots que alguien tomó.
+            </p>
+          </section>
+
+          <!-- Estadísticas: grid de tarjetas -->
+          <section>
+            <h3>Esto ya está pasando</h3>
+            <p
+              style="
+                font-size: 0.52em;
+                color: rgba(255, 255, 255, 0.65);
+                margin-bottom: 0.2em;
+              "
+            >
+              Fuente: Net Children Go Mobile
+            </p>
+            <div class="stat-grid">
+              <div class="stat-card">
+                <span class="stat-num">32%</span>
+                sufrió algún tipo de bullying digital
+              </div>
+              <div class="stat-card">
+                <span class="stat-num">31%</span>
+                recibió mensajes sexuales no solicitados
+              </div>
+              <div class="stat-card">
+                <span class="stat-num">21%</span>
+                tuvo contacto riesgoso con desconocidos en línea
+              </div>
+              <div class="stat-card">
+                <span class="stat-num">32%</span>
+                vio contenido inapropiado o potencialmente dañino
+              </div>
+            </div>
+            <p
+              style="
+                font-size: 0.55em;
+                margin-top: 0.6em;
+                font-style: italic;
+                color: rgba(255, 255, 255, 0.8);
+              "
+            >
+              Y eso es solo lo que reportan.
+            </p>
+          </section>
+
+          <!-- ─── REVEAL ACTIVIDAD QR ─── -->
+          <section data-state="qr-reveal">
+            <h3>¿Recuerdan los QRs del inicio?</h3>
+            <p style="font-size: 0.6em; margin-bottom: 0.6em">
+              Uno era una bienvenida normal.<br />
+              El otro era un formulario de
+              <em>"registro oficial de asistencia".</em>
+            </p>
+            <div class="reveal-stat-grid">
+              <div class="reveal-stat">
+                <span class="rnum" id="stat-safe">—</span>
+                escanearon "Bienvenida"
+              </div>
+              <div class="reveal-stat">
+                <span class="rnum" id="stat-phish">—</span>
+                enviaron sus datos en "Registro"
+              </div>
+            </div>
+            <p
+              style="
+                font-size: 0.47em;
+                margin-top: 0.8em;
+                color: rgba(255, 255, 255, 0.55);
+              "
+              id="stats-note"
+            >
+              Cargando datos en tiempo real...
+            </p>
+          </section>
+
+          <section>
+            <h3>Nunca te pedí tu contraseña</h3>
+            <p style="font-size: 0.62em; margin-bottom: 0.5em">
+              No la necesito. Con lo que entregaron ya tengo:
+            </p>
+            <ul
+              style="
+                font-size: 0.58em;
+                text-align: left;
+                max-width: 600px;
+                margin: 0 auto;
+                line-height: 2;
+              "
+            >
+              <li>
+                <strong>Nombre + Carnet + Correo UVG</strong> → spear-phishing
+                que parece correo oficial de la universidad
+              </li>
+              <li>
+                <strong>WhatsApp</strong> → clonar tu voz con IA en minutos y
+                llamar a tu familia
+              </li>
+              <li>
+                <strong>Carrera + Curso</strong> → sé exactamente qué lenguaje
+                usarte para que confíes
+              </li>
+              <li>
+                <strong>Correo UVG</strong> → cruzarlo con bases filtradas para
+                encontrar tus contraseñas
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 style="font-size: 1.1em">En 60 segundos,</h2>
+            <p style="font-size: 0.75em; margin-top: 0.5em">
+              un atacante obtuvo todo lo que necesita<br />
+              para hacerse pasar por ti o atacar a alguien cercano a ti.
+            </p>
+            <br />
+            <p style="font-size: 0.65em; color: rgba(255, 255, 255, 0.85)">
+              Sin pedir contraseña. Sin que pareciera sospechoso.<br />
+              <strong>Eso es el phishing real en 2026.</strong>
+            </p>
+          </section>
+
+          <!-- Phishing -->
+          <section>
+            <h3>Caso 1: El phishing evolucionó</h3>
+            <img
+              src="./assets/tec4.jpg"
+              alt="Phishing"
+              style="width: 28%; float: right; margin-left: 1em"
+            />
+            <p style="font-size: 0.67em; margin-bottom: 0.5em">
+              <strong>Antes:</strong>
+              <em>"¡Ganaste un iPhone! Haz clic aquí."</em>
+            </p>
+            <p style="font-size: 0.67em; margin-bottom: 0.5em">
+              <strong>Hoy:</strong> Un correo idéntico al de Spotify<br />
+              <em>"Tu cuenta fue suspendida. Verifica aquí."</em>
+            </p>
+            <p style="font-size: 0.65em; margin-top: 0.5em">
+              Si hacen clic, le entregan sus credenciales al atacante.
+            </p>
+            <br />
+            <p style="font-size: 0.62em">
+              <strong>Cómo detectarlo:</strong> revisar el remitente real ·
+              verificar el enlace antes de hacer clic.
+            </p>
+          </section>
+
+          <!-- Grooming / sextorsión -->
+          <section>
+            <h3>Caso 2: Grooming y Sextorsión</h3>
+            <div style="display: flex; gap: 20px; justify-content: center">
+              <img
+                src="./assets/tec6.webp"
+                alt="Riesgo en línea"
+                style="width: 26%"
+              />
+              <img
+                src="./assets/tec8.webp"
+                alt="Sextorsión"
+                style="width: 26%"
+              />
+            </div>
+            <p style="font-size: 0.65em; margin-top: 0.5em">
+              Personas que se hacen pasar por jóvenes en videojuegos o redes
+              para ganar confianza... y luego solicitan fotos o información
+              íntima.
+            </p>
+            <p style="font-size: 0.65em; margin-top: 0.4em">
+              Después usan eso para amenazar.
+              <strong>En Guatemala ya hay casos documentados.</strong>
+            </p>
+            <p style="font-size: 0.62em; margin-top: 0.4em">
+              <strong>¿Qué hacer?</strong> No compartir nada comprometedor ·
+              Bloquear · Reportar a un adulto de confianza
+            </p>
+          </section>
+
+          <!-- Deepfakes: parte 1 — video -->
+          <section>
+            <h3>Caso 3: ¿Has visto un deepfake?</h3>
+            <video
+              src="./assets/deepfake.mp4"
+              controls
+              style="height: 260px; margin-top: 0.5em"
+            ></video>
+            <p style="font-size: 0.67em; margin-top: 0.5em">
+              Con IA, hoy es posible generar video, audio e imágenes<br />
+              de personas reales que nunca dijeron ni hicieron nada de eso.
+            </p>
+          </section>
+
+          <!-- Deepfakes: parte 2 — usos maliciosos -->
+          <section>
+            <h3>¿Cómo se usa con malicia?</h3>
+            <ul
+              style="
+                font-size: 0.7em;
+                text-align: left;
+                max-width: 600px;
+                margin: 0.8em auto 0;
+                line-height: 1.9;
+              "
+            >
+              <li>
+                <strong>Videos falsos</strong> — personas reales "diciendo"
+                cosas que nunca dijeron
+              </li>
+              <li>
+                <strong>Voces clonadas</strong> — llamadas con la voz de un
+                familiar pidiendo dinero
+              </li>
+              <li>
+                <strong>Imágenes íntimas</strong> — generadas con una sola foto
+                pública
+              </li>
+            </ul>
+            <p style="font-size: 0.62em; margin-top: 1em">
+              Como futuros ingenieros: entienden estas herramientas para
+              <strong>defenderlas, no para usarlas con malicia.</strong>
+            </p>
+          </section>
+
+          <!-- Contraseñas -->
+          <section>
+            <h3>Caso 4: El error más común</h3>
+            <p style="font-size: 0.68em; margin-bottom: 0.6em">
+              ¿Usan la misma contraseña en más de un sitio?<br />
+              Eso se llama <strong>reutilización de credenciales</strong>: la
+              causa más común de cuentas hackeadas.
+            </p>
+            <ol
+              style="
+                font-size: 0.68em;
+                text-align: left;
+                max-width: 580px;
+                margin: 0 auto;
+                line-height: 1.9;
+              "
+            >
+              <li>Contraseña única por servicio importante</li>
+              <li>Autenticación de dos factores (2FA) siempre activada</li>
+              <li>Nunca compartir credenciales, ni con "soporte técnico"</li>
+              <li>
+                Verificar HTTPS antes de ingresar datos en cualquier sitio
+              </li>
+            </ol>
+          </section>
+
+          <!-- Have I Been Pwned — demo en vivo (opcional ~4 min) -->
+          <section>
+            <p class="bloque-tag">Demo en vivo · opcional</p>
+            <h3>Tus datos probablemente ya están afuera</h3>
+            <a
+              class="hibp-link"
+              href="https://haveibeenpwned.com"
+              target="_blank"
+              rel="noopener"
+              >haveibeenpwned.com</a
+            >
+            <p
+              style="font-size: 0.62em; max-width: 560px; margin: 0 auto 0.6em"
+            >
+              Estadísticamente, casi cualquier correo con 5+ años aparece<br />
+              en al menos una brecha de datos real.
+            </p>
+            <!--
+              GUION PRESENTADOR:
+              1. Pedir voluntario: "¿Alguien me presta su correo para la demo?"
+              2. Abrir haveibeenpwned.com en otra pestaña, escribir el correo en vivo
+              3. Mostrar la lista de brechas → preguntar "¿Reconocen algún servicio de aquí?"
+              4. Pregunta clave: "¿Qué hacen ahora con esa contraseña?"
+                 Respuesta esperada: cambiarla en todos los servicios donde la reutilizaron + activar 2FA
+              PLAN B si no hay wifi o nadie quiere dar su correo:
+                 → en assets/ guardar una captura como hibp-fallback.png
+                    y cambiar style="display:none" a style="display:block" en la img de abajo
+            -->
+            <img
+              src="./assets/hibp-fallback.png"
+              alt="Ejemplo Have I Been Pwned — múltiples brechas"
+              id="hibp-fallback"
+              style="
+                display: none;
+                max-height: 180px;
+                margin: 0.4em auto;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+              "
+            />
+            <p
+              style="
+                font-size: 0.55em;
+                margin-top: 0.6em;
+                color: rgba(255, 255, 255, 0.7);
+              "
+            >
+              Siguiente paso: cambiar contraseñas comprometidas · activar 2FA ·
+              usar un gestor de contraseñas
+            </p>
+          </section>
+
+          <!-- QUIZ INTERACTIVO 1 -->
+          <section>
+            <p class="bloque-tag">Quiz</p>
+            <h3>¿Cuál es la contraseña más segura?</h3>
+            <div class="quiz-wrap" id="quiz1">
+              <p class="quiz-question">Seleccionen la opción más segura:</p>
+              <div class="quiz-options">
+                <button
+                  class="quiz-btn"
+                  onclick="responderQuiz(this, 'a', '1')"
+                >
+                  a) pedro1998
+                </button>
+                <button
+                  class="quiz-btn"
+                  onclick="responderQuiz(this, 'b', '1')"
+                >
+                  b) P3dr0@Uvg#2026!
+                </button>
+                <button
+                  class="quiz-btn"
+                  onclick="responderQuiz(this, 'c', '1')"
+                >
+                  c) 123456
+                </button>
+                <button
+                  class="quiz-btn"
+                  onclick="responderQuiz(this, 'd', '1')"
+                >
+                  d) pedro
+                </button>
+              </div>
+              <p class="quiz-feedback" id="fb1"></p>
+            </div>
+          </section>
+
+          <!-- QUIZ INTERACTIVO 2 -->
+          <section>
+            <p class="bloque-tag">Quiz</p>
+            <h3>¿Cuál de estos es phishing?</h3>
+            <div class="quiz-wrap" id="quiz2">
+              <p class="quiz-question">
+                Reciben este correo. ¿Cuál es el intento de phishing?
+              </p>
+              <div class="quiz-options">
+                <button
+                  class="quiz-btn"
+                  onclick="responderQuiz(this, 'a', '2')"
+                >
+                  a) "Tu pedido de Amazon fue enviado. Número de rastreo: #..."
+                </button>
+                <button
+                  class="quiz-btn"
+                  onclick="responderQuiz(this, 'b', '2')"
+                >
+                  b) "UVG: Tu inscripción fue confirmada para agosto 2026"
+                </button>
+                <button
+                  class="quiz-btn"
+                  onclick="responderQuiz(this, 'c', '2')"
+                >
+                  c) "Spotify: Tu cuenta fue SUSPENDIDA. Verifica en
+                  spotiify-seguro.com"
+                </button>
+                <button
+                  class="quiz-btn"
+                  onclick="responderQuiz(this, 'd', '2')"
+                >
+                  d) "WhatsApp: Tu código de verificación es 847-293"
+                </button>
+              </div>
+              <p class="quiz-feedback" id="fb2"></p>
+            </div>
+          </section>
+
+          <!-- Reputación digital -->
+          <section>
+            <h3>Tu Instagram de hoy,<br />tu trabajo de mañana</h3>
+            <img
+              src="./assets/tec9.jpg"
+              alt="Reputación digital"
+              style="width: 28%"
+            />
+            <p style="font-size: 0.68em; margin-top: 0.4em">
+              Los reclutadores <strong>revisan redes sociales</strong> antes de
+              contratar.<br />
+              Pueden ver tu Instagram de hace 5 años.
+            </p>
+            <p style="font-size: 0.65em; margin-top: 0.5em">
+              <strong>Reto para esta semana:</strong> busquen su nombre en
+              Google.<br />
+              Eso es exactamente lo que ve quien los quiere contratar.
+            </p>
+            <p
+              style="
+                font-size: 0.57em;
+                margin-top: 0.5em;
+                color: rgba(255, 255, 255, 0.8);
+              "
+            >
+              No se trata de no tener vida digital; se trata de curarla con
+              intención.
+            </p>
+          </section>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             PAUSA ACTIVA
+        ═══════════════════════════════════════════════ -->
+        <section>
+          <h2>Pausa activa</h2>
+          <p style="font-size: 0.7em; margin-top: 0.5em">
+            5 minutos · Levántense, estírense, hablen con el de al lado
+          </p>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             BLOQUE 3 — TU PROYECTO EN EL MUNDO REAL
+        ═══════════════════════════════════════════════ -->
+        <section>
+          <section>
+            <p class="bloque-tag">Bloque 3</p>
+            <h2>Tu proyecto<br />en el mundo real</h2>
+            <p
+              style="
+                font-size: 0.6em;
+                margin-top: 0.5em;
+                color: rgba(255, 255, 255, 0.8);
+              "
+            >
+              Revisión aplicada del Taller #2
+            </p>
+          </section>
+
+          <section>
+            <h3>Tu prototipo ya tiene responsabilidades</h3>
+            <img
+              src="./assets/tec5.jpg"
+              alt="Sistema de información"
+              style="width: 32%"
+            />
+            <p style="font-size: 0.68em; margin-top: 0.4em">
+              En el Taller #2 diseñaron una solución tecnológica real.
+            </p>
+            <p style="font-size: 0.68em; margin-top: 0.4em">
+              Todo sistema que toca datos de personas tiene
+              <strong>responsabilidades de seguridad</strong>,<br />
+              aunque sea un prototipo.
+            </p>
+            <p
+              style="
+                font-size: 0.62em;
+                margin-top: 0.4em;
+                color: rgba(255, 255, 255, 0.85);
+              "
+            >
+              Los hábitos de diseño que desarrollen hoy van a definir cómo
+              construyan sistemas reales mañana.
+            </p>
+          </section>
+
+          <!-- CHECKLIST INTERACTIVA -->
+          <section>
+            <h3>Las 5 preguntas que todo sistema debe responder</h3>
+            <p
+              style="
+                font-size: 0.55em;
+                color: rgba(255, 255, 255, 0.8);
+                margin-bottom: 0.6em;
+              "
+            >
+              Hagan clic en cada pregunta cuando la hayan discutido en equipo
+            </p>
+            <ul class="checklist" id="checklist">
+              <li onclick="toggleCheck(this)">
+                <span class="check-icon">[ ]</span>
+                <span class="check-text">
+                  <strong>1. ¿Qué datos recopilan?</strong> ¿Necesitan TODO o
+                  solo parte? Principio de minimización de datos.
+                </span>
+              </li>
+              <li onclick="toggleCheck(this)">
+                <span class="check-icon">[ ]</span>
+                <span class="check-text">
+                  <strong>2. ¿Quién puede ver esos datos?</strong> ¿Hay roles de
+                  usuario? ¿Un alumno puede ver notas de otro?
+                </span>
+              </li>
+              <li onclick="toggleCheck(this)">
+                <span class="check-icon">[ ]</span>
+                <span class="check-text">
+                  <strong>3. ¿Cómo se almacenan las contraseñas?</strong> Nunca
+                  en texto plano. Usar algoritmos como bcrypt.
+                </span>
+              </li>
+              <li onclick="toggleCheck(this)">
+                <span class="check-icon">[ ]</span>
+                <span class="check-text">
+                  <strong>4. ¿Qué pasa si hay una brecha?</strong> ¿A quién
+                  notifican? ¿Tienen un plan de respuesta?
+                </span>
+              </li>
+              <li onclick="toggleCheck(this)">
+                <span class="check-icon">[ ]</span>
+                <span class="check-text">
+                  <strong>5. ¿Qué permisos pide su sistema?</strong> ¿Los
+                  necesita para funcionar? Si no, no los pidan.
+                </span>
+              </li>
+            </ul>
+            <p class="check-prog" id="check-prog">0 / 5 discutidas</p>
+          </section>
+
+          <!-- TIMER -->
+          <section>
+            <p class="bloque-tag">Actividad grupal · 10 minutos</p>
+            <h3>Tiempo para sus equipos</h3>
+            <div class="timer-display" id="timer">10:00</div>
+            <div class="timer-bar-wrap">
+              <div
+                class="timer-bar"
+                id="timer-bar"
+                style="transform: scaleX(1)"
+              ></div>
+            </div>
+            <div class="timer-controls">
+              <button
+                class="timer-btn"
+                id="btn-start"
+                onclick="timerControl('start')"
+              >
+                Iniciar
+              </button>
+              <button
+                class="timer-btn"
+                id="btn-pause"
+                onclick="timerControl('pause')"
+                disabled
+              >
+                Pausar
+              </button>
+              <button class="timer-btn" onclick="timerControl('reset')">
+                Reiniciar
+              </button>
+            </div>
+            <ul class="timer-task">
+              <li>Respondan las 5 preguntas de seguridad para su proyecto</li>
+              <li>
+                No necesitan tener todas las respuestas; identifiquen cuáles no
+                han considerado
+              </li>
+              <li>Apunten al menos una vulnerabilidad que encuentren</li>
+            </ul>
+          </section>
+
+          <!-- Ética del producto: pregunta 1 -->
+          <section>
+            <h3>Antes de lanzar, pregúntate...</h3>
+            <br />
+            <p class="pregunta-etica">
+              ¿Tu sistema puede usarse para vigilar<br />
+              a alguien sin su consentimiento?
+            </p>
+            <p class="pregunta-etica-nota">
+              Si la respuesta es "tal vez", hay que rediseñar.
+            </p>
+          </section>
+
+          <!-- Ética del producto: pregunta 2 -->
+          <section>
+            <h3>Antes de lanzar, pregúntate...</h3>
+            <br />
+            <p class="pregunta-etica">
+              ¿Los datos que recopilan podrían usarse<br />
+              para discriminar a personas?
+            </p>
+            <p class="pregunta-etica-nota">
+              Los datos bien intencionados también pueden hacer daño.
+            </p>
+          </section>
+
+          <!-- Ética del producto: pregunta 3 -->
+          <section>
+            <h3>Antes de lanzar, pregúntate...</h3>
+            <br />
+            <p class="pregunta-etica">
+              ¿Los usuarios saben exactamente<br />
+              qué datos dan y para qué?
+            </p>
+            <p class="pregunta-etica-nota">
+              El consentimiento no es un checkbox. Es una conversación.
+            </p>
+          </section>
+
+          <section>
+            <h3>
+              ¿Alguien encontró una vulnerabilidad<br />en su propio proyecto?
+            </h3>
+            <p
+              style="
+                font-size: 0.7em;
+                margin-top: 0.6em;
+                color: rgba(255, 255, 255, 0.8);
+              "
+            >
+              Cuéntenla. No hay respuestas malas aquí.
+            </p>
+          </section>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             BLOQUE 4 — CIERRE Y Q&A
+        ═══════════════════════════════════════════════ -->
+        <section>
+          <section>
+            <h2>¿Preguntas? Disparen.</h2>
+            <p
+              style="
+                font-size: 0.68em;
+                margin-top: 0.4em;
+                color: rgba(255, 255, 255, 0.8);
+              "
+            >
+              No hay preguntas tontas.
+            </p>
+            <ul
+              style="
+                font-size: 0.63em;
+                margin-top: 0.8em;
+                text-align: left;
+                max-width: 600px;
+                margin: 0.8em auto 0;
+                line-height: 1.9;
+              "
+            >
+              <li>
+                ¿Creen que los jóvenes en Guatemala están preparados para estas
+                amenazas?
+              </li>
+              <li>
+                ¿Qué harían si descubren una vulnerabilidad en el sistema de su
+                colegio?
+              </li>
+              <li>¿La ciberseguridad es un problema técnico o humano?</li>
+            </ul>
+          </section>
+
+          <section>
+            <h3>Para llevarte a casa</h3>
+            <ul style="font-size: 0.7em; line-height: 1.9">
+              <li>El CIO como <strong>guardián ético</strong> de los datos</li>
+              <li>
+                La ciberseguridad como <strong>habilidad de vida</strong>, no
+                solo profesional
+              </li>
+              <li>
+                Cómo aplicar todo eso al
+                <strong>trabajo que ya empezaron</strong>
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <p
+              style="
+                font-size: 1em;
+                font-style: italic;
+                border-top: 1px solid rgba(255, 255, 255, 0.3);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+                padding: 0.5em 0;
+                margin: 0.4em 0;
+                max-width: 680px;
+                margin: 0 auto;
+              "
+            >
+              "La tecnología es tan poderosa como la intención<br />
+              de quien la construye.<br />
+              Ustedes van a ser quienes la construyan."
+            </p>
+            <p style="font-size: 0.65em; margin-top: 0.8em">
+              Cuando diseñen sistemas, pregúntense siempre:<br />
+              <em>¿estoy protegiendo a las personas que van a usar esto?</em>
+            </p>
+            <p
+              style="
+                font-size: 0.6em;
+                margin-top: 0.6em;
+                color: rgba(255, 255, 255, 0.8);
+              "
+            >
+              Nos vemos en la presentación de proyectos. Mucho éxito.
+            </p>
+          </section>
+
+          <section>
+            <h2>¡Gracias!</h2>
+            <p style="font-size: 0.6em">Ing. Ludwing Cano</p>
+          </section>
+        </section>
+      </div>
+      <!-- /slides -->
+
+      <div class="footer">
+        <img
+          src="logo.webp"
+          alt="Logo Universidad del Valle de Guatemala"
+          style="height: 50px"
+        />
+      </div>
+    </div>
+    <!-- /reveal -->
+
+    <script src="reveal/qrcode.min.js"></script>
+    <script src="reveal/reveal.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        controls: true,
+        progress: true,
+        center: true,
+        transition: "slide",
+        backgroundTransition: "fade",
+      });
+
+      /* DILEMA ETICO */
+      var dilemaFeedback = {
+        a: "Riesgo calculado, pero dejar una vulnerabilidad abierta viola la responsabilidad ética del CIO. Documentar el riesgo es lo mínimo aceptable.",
+        b: "[RECOMENDADO] Notificar, documentar y aplicar medidas provisionales mientras se gestiona el presupuesto. Respuesta más equilibrada.",
+        c: "Válido si los fondos no afectan proyectos críticos. Pero reubicar sin autorización puede crear otros problemas.",
+        d: "[NO ACEPTABLE] Ignorar una vulnerabilidad conocida es éticamente inaceptable y legalmente riesgoso para el responsable.",
+      };
+      function elegirDilema(el, opcion) {
+        document.querySelectorAll(".dilema-btn").forEach(function (c) {
+          c.classList.remove("selected");
+        });
+        el.classList.add("selected");
+        document.getElementById("dilema-fb").textContent =
+          dilemaFeedback[opcion];
+      }
+
+      /* QUIZ */
+      var quizAnswers = { 1: "b", 2: "c" };
+      var quizFeedback = {
+        1: {
+          a: "[INCORRECTO] Nombre + año de nacimiento. Fácil de adivinar.",
+          b: "[CORRECTO] Mezcla de mayúsculas, minúsculas, números y símbolos. Difícil de crackear.",
+          c: "[INCORRECTO] 123456 está en todos los diccionarios de ataques.",
+          d: "[INCORRECTO] Demasiado corta y simple.",
+        },
+        2: {
+          a: "No es phishing. Este tipo de correo viene con número de seguimiento real y remitente verificable.",
+          b: "No es phishing. Mensaje institucional esperado.",
+          c: "[CORRECTO] Phishing clásico: dominio falso 'spotiify-seguro.com' (doble i). El pánico más el enlace sospechoso es la trampa.",
+          d: "No es phishing. Los códigos 2FA son esperados cuando tú los solicitas.",
+        },
+      };
+      function responderQuiz(btn, opcion, qid) {
+        var wrap = document.getElementById("quiz" + qid);
+        wrap.querySelectorAll(".quiz-btn").forEach(function (b) {
+          b.disabled = true;
+          b.classList.remove("correct", "wrong");
+        });
+        btn.classList.add(opcion === quizAnswers[qid] ? "correct" : "wrong");
+        wrap
+          .querySelector(".quiz-btn[onclick*=\"'" + quizAnswers[qid] + "'\"]")
+          .classList.add("correct");
+        document.getElementById("fb" + qid).textContent =
+          quizFeedback[qid][opcion];
+      }
+
+      /* CHECKLIST */
+      function toggleCheck(li) {
+        li.classList.toggle("done");
+        var icon = li.querySelector(".check-icon");
+        icon.textContent = li.classList.contains("done") ? "[x]" : "[ ]";
+        var done = document.querySelectorAll("#checklist li.done").length;
+        document.getElementById("check-prog").textContent =
+          done + " / 5 discutidas";
+      }
+
+      /* TIMER */
+      var TIMER_TOTAL = 10 * 60;
+      var timerRemaining = TIMER_TOTAL;
+      var timerInterval = null;
+      var timerRunning = false;
+
+      function updateTimerDisplay() {
+        var m = Math.floor(timerRemaining / 60);
+        var s = timerRemaining % 60;
+        var display = document.getElementById("timer");
+        var bar = document.getElementById("timer-bar");
+        if (!display) return;
+        display.textContent =
+          (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+        display.className =
+          "timer-display" + (timerRemaining <= 60 ? " warning" : "");
+        bar.style.transform = "scaleX(" + timerRemaining / TIMER_TOTAL + ")";
+      }
+
+      function timerControl(action) {
+        if (action === "start" && !timerRunning) {
+          timerRunning = true;
+          document.getElementById("btn-start").disabled = true;
+          document.getElementById("btn-pause").disabled = false;
+          timerInterval = setInterval(function () {
+            if (timerRemaining > 0) {
+              timerRemaining--;
+              updateTimerDisplay();
+            } else {
+              clearInterval(timerInterval);
+              timerRunning = false;
+              document.getElementById("timer").textContent = "Tiempo";
+            }
+          }, 1000);
+        } else if (action === "pause" && timerRunning) {
+          clearInterval(timerInterval);
+          timerRunning = false;
+          document.getElementById("btn-start").disabled = false;
+          document.getElementById("btn-pause").disabled = true;
+        } else if (action === "reset") {
+          clearInterval(timerInterval);
+          timerRunning = false;
+          timerRemaining = TIMER_TOTAL;
+          updateTimerDisplay();
+          document.getElementById("btn-start").disabled = false;
+          document.getElementById("btn-pause").disabled = true;
+        }
+      }
+
+      /* ═══════════════════════════════════════════════
+         ACTIVIDAD QR — URLs detectadas automáticamente
+         desde la ubicación actual de la presentación.
+         Sobreescribe manualmente si es necesario.
+      ═══════════════════════════════════════════════ */
+      var _base = window.location.href.replace(/\/[^\/]*$/, "");
+      var QR_URL_SAFE  = _base + "/qr-bienvenida/";
+      var QR_URL_PHISH = _base + "/qr-registro/";
+      var STATS_URL =
+        "https://script.google.com/macros/s/AKfycby5lZMFkpe-9e0WaePrs8EJO-jW1TdNhwlhV5syPWnXU3WyfWpwmGhupc00KZa2ky46/exec";
+
+      /* QR CODES — se renderizan al cargar la presentación */
+      Reveal.on("ready", function () {
+        var elA = document.getElementById("qr-a");
+        var elB = document.getElementById("qr-b");
+        if (elA) elA.innerHTML = "";
+        if (elB) elB.innerHTML = "";
+
+        if (elA) {
+          new QRCode(elA, {
+            text: QR_URL_SAFE,
+            width: 140,
+            height: 140,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+          });
+        }
+
+        if (elB) {
+          new QRCode(elB, {
+            text: QR_URL_PHISH,
+            width: 140,
+            height: 140,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+          });
+        }
+      });
+
+      /* STATS EN VIVO — se consultan al llegar al slide de reveal */
+      Reveal.on("slidechanged", function (event) {
+        if (
+          event.currentSlide &&
+          event.currentSlide.dataset.state === "qr-reveal"
+        ) {
+          fetchQrStats();
+        }
+      });
+
+      function fetchQrStats() {
+        if (
+          STATS_URL.indexOf(
+            "TU_APPS_SCRIPT_ID",
+          ) !== -1
+        )
+          return;
+        var note = document.getElementById("stats-note");
+        fetch(STATS_URL)
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (d) {
+            var safe = document.getElementById("stat-safe");
+            var phish = document.getElementById("stat-phish");
+            if (safe) safe.textContent = d.safeHits || 0;
+            if (phish) phish.textContent = d.phishSubmits || 0;
+            if (note) note.textContent = "Datos en vivo · actualizado ahora";
+          })
+          .catch(function () {
+            var safe = document.getElementById("stat-safe");
+            var phish = document.getElementById("stat-phish");
+            if (safe) safe.textContent = "?";
+            if (phish) phish.textContent = "?";
+            if (note)
+              note.textContent = "Sin conexión — ingresa el número manualmente";
+          });
+      }
+    </script>
+  </body>
+</html>

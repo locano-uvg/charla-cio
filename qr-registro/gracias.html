@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Registro recibido · UVG</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, sans-serif;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0;
+      }
+      .top-bar {
+        width: 100%;
+        background: #003e1f;
+        color: #fff;
+        padding: 0.9rem 1.4rem;
+        margin-bottom: 3rem;
+      }
+      .top-bar .logo-text {
+        font-weight: 700;
+        font-size: 1rem;
+        letter-spacing: 0.03em;
+      }
+      .top-bar .sub-text {
+        font-size: 0.72rem;
+        opacity: 0.75;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 2.2rem 1.8rem;
+        max-width: 420px;
+        width: calc(100% - 2.4rem);
+        box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+        text-align: center;
+      }
+      .check-icon {
+        width: 54px;
+        height: 54px;
+        background: #003e1f;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        font-size: 1.5rem;
+        color: #fff;
+      }
+      h1 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #0a2e14;
+        margin-bottom: 0.6rem;
+      }
+      p {
+        font-size: 0.88rem;
+        color: #444;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+      }
+      .divider {
+        border: none;
+        border-top: 1px solid #eee;
+        margin: 1.4rem 0;
+      }
+      .ref {
+        font-size: 0.75rem;
+        color: #888;
+        font-variant-numeric: tabular-nums;
+      }
+      .footer-note {
+        font-size: 0.68rem;
+        color: #999;
+        text-align: center;
+        margin-top: 2rem;
+        padding: 0 1.2rem 2rem;
+        max-width: 420px;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <div class="logo-text">Universidad del Valle de Guatemala</div>
+      <div class="sub-text">Oficina de Registros Académicos — Eventos Especiales</div>
+    </div>
+
+    <div class="card">
+      <div class="check-icon">&#10003;</div>
+      <h1>Registro recibido</h1>
+      <p>
+        Tu asistencia al evento <strong>CIO for a Day · julio 2026</strong> ha sido
+        confirmada exitosamente.
+      </p>
+      <p>
+        El <strong>certificado de participación</strong> será enviado a tu correo
+        institucional al cierre de la sesión de hoy.
+      </p>
+      <hr class="divider" />
+      <p class="ref" id="ref-num"></p>
+      <p class="ref">Conserva esta pantalla como respaldo hasta recibir el correo.</p>
+    </div>
+
+    <p class="footer-note">
+      Universidad del Valle de Guatemala · Dirección de Tecnología e Innovación<br />
+      Para consultas: eventos@uvg.edu.gt
+    </p>
+
+    <script>
+      /* Número de referencia aleatorio para mayor verosimilitud */
+      var ref = "UVG-" + new Date().getFullYear() + "-" + Math.floor(100000 + Math.random() * 900000);
+      document.getElementById("ref-num").textContent = "No. de referencia: " + ref;
+    </script>
+  </body>
+</html>
