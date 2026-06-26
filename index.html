@@ -286,21 +286,68 @@
         margin: 0.4em 0 0.6em;
         letter-spacing: 0.02em;
       }
+
+      /* ── Partículas portada ── */
+      #particles-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+      }
+      #particles-canvas.active {
+        opacity: 1;
+      }
+
+      /* ── Count-up stat ── */
+      @keyframes statFadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .stat-card.counted .stat-num {
+        animation: statFadeIn 0.45s ease both;
+      }
+
+      /* ── QR card pulse (slide qr-activity) ── */
+      @keyframes qrPulse {
+        0%, 100% { border-color: rgba(255, 255, 255, 0.4); }
+        50%       { border-color: rgba(255, 255, 255, 0.85); box-shadow: 0 0 12px rgba(255,255,255,0.15); }
+      }
+      .qr-activity-active .qr-card {
+        animation: qrPulse 2.4s ease-in-out infinite;
+      }
+      .qr-activity-active .qr-card:nth-child(2) {
+        animation-delay: 1.2s;
+      }
+
+      /* ── Portada: entrada de texto ── */
+      @keyframes coverFadeUp {
+        from { opacity: 0; transform: translateY(18px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .cover-anim-1 { animation: coverFadeUp 0.65s ease 0.1s both; }
+      .cover-anim-2 { animation: coverFadeUp 0.65s ease 0.4s both; }
+      .cover-anim-3 { animation: coverFadeUp 0.65s ease 0.7s both; }
     </style>
   </head>
   <body>
+    <canvas id="particles-canvas"></canvas>
     <div class="reveal">
       <div class="slides">
         <!-- ═══════════════════════════════════════════════
              PORTADA
         ═══════════════════════════════════════════════ -->
-        <section>
+        <section data-state="cover">
           <br />
-          <p class="bloque-tag">CIO for a Day · UVG · julio 2026</p>
-          <h2 style="line-height: 1.2">
+          <p class="bloque-tag cover-anim-1">CIO for a Day · UVG · julio 2026</p>
+          <h2 class="cover-anim-2" style="line-height: 1.2">
             Ciberseguridad,<br />Ética y el Rol del CIO
           </h2>
-          <p style="font-size: 0.6em; margin-top: 1em; color: #fff">
+          <p class="cover-anim-3" style="font-size: 0.6em; margin-top: 1em; color: #fff">
             Ing. Ludwing Cano<br />Sábado 11 de julio de 2026
           </p>
         </section>
@@ -552,7 +599,7 @@
           </section>
 
           <!-- Estadísticas: grid de tarjetas -->
-          <section>
+          <section data-state="stats-slide">
             <h3>Esto ya está pasando</h3>
             <p
               style="
@@ -1453,6 +1500,135 @@
               note.textContent = "Sin conexión — ingresa el número manualmente";
           });
       }
+
+      /* ══════════════════════════════════════════════════
+         PARTÍCULAS DE FONDO — portada
+      ══════════════════════════════════════════════════ */
+      (function () {
+        var canvas = document.getElementById("particles-canvas");
+        var ctx = canvas.getContext("2d");
+        var particles = [];
+        var N = 50;
+        var rafId = null;
+        var running = false;
+
+        function resize() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resize);
+        resize();
+
+        for (var i = 0; i < N; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 2.0 + 0.5,
+            dx: (Math.random() - 0.5) * 0.3,
+            dy: -(Math.random() * 0.5 + 0.12),
+            alpha: Math.random() * 0.3 + 0.07,
+          });
+        }
+
+        function draw() {
+          if (!running) return;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach(function (p) {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(168, 240, 200, " + p.alpha + ")";
+            ctx.fill();
+            p.x += p.dx;
+            p.y += p.dy;
+            if (p.y < -8) {
+              p.y = canvas.height + 8;
+              p.x = Math.random() * canvas.width;
+            }
+            if (p.x < -8 || p.x > canvas.width + 8) {
+              p.x = p.x < 0 ? canvas.width + 4 : -4;
+            }
+          });
+          rafId = requestAnimationFrame(draw);
+        }
+
+        function startParticles() {
+          if (running) return;
+          running = true;
+          canvas.classList.add("active");
+          draw();
+        }
+
+        function stopParticles() {
+          running = false;
+          canvas.classList.remove("active");
+          if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        Reveal.on("slidechanged", function (event) {
+          var state = event.currentSlide ? (event.currentSlide.dataset.state || "") : "";
+          if (state === "cover") {
+            startParticles();
+          } else {
+            stopParticles();
+          }
+        });
+
+        Reveal.on("ready", function (event) {
+          var state = event.currentSlide ? (event.currentSlide.dataset.state || "") : "";
+          if (state === "cover") startParticles();
+        });
+      })();
+
+      /* ══════════════════════════════════════════════════
+         COUNT-UP — stat cards al entrar al slide de stats
+      ══════════════════════════════════════════════════ */
+      (function () {
+        var statsTargets = [32, 31, 21, 32];
+        var alreadyCounted = false;
+
+        function countUp(el, target, duration) {
+          var start = 0;
+          var step = Math.ceil(duration / target);
+          var interval = setInterval(function () {
+            start += 1;
+            el.textContent = start + "%";
+            if (start >= target) {
+              el.textContent = target + "%";
+              clearInterval(interval);
+            }
+          }, step);
+        }
+
+        Reveal.on("slidechanged", function (event) {
+          var state = event.currentSlide ? (event.currentSlide.dataset.state || "") : "";
+          if (state === "stats-slide" && !alreadyCounted) {
+            alreadyCounted = true;
+            var cards = document.querySelectorAll(".stat-card");
+            cards.forEach(function (card, i) {
+              card.classList.add("counted");
+              var numEl = card.querySelector(".stat-num");
+              if (numEl && statsTargets[i] !== undefined) {
+                countUp(numEl, statsTargets[i], 900);
+              }
+            });
+          }
+        });
+      })();
+
+      /* ══════════════════════════════════════════════════
+         QR CARDS PULSE — al entrar al slide qr-activity
+      ══════════════════════════════════════════════════ */
+      Reveal.on("slidechanged", function (event) {
+        var state = event.currentSlide ? (event.currentSlide.dataset.state || "") : "";
+        var qrGrid = document.querySelector(".qr-grid");
+        if (!qrGrid) return;
+        if (state === "qr-activity") {
+          qrGrid.classList.add("qr-activity-active");
+        } else {
+          qrGrid.classList.remove("qr-activity-active");
+        }
+      });
     </script>
   </body>
 </html>

@@ -407,7 +407,8 @@
       if (STATS_URL.indexOf("TU_APPS_SCRIPT") === -1) {
         fetch(STATS_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain" },
           body: JSON.stringify({ type: "safe_hit" }),
         }).catch(function () {});
       }

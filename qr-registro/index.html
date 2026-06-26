@@ -20,6 +20,7 @@
         flex-direction: column;
         align-items: center;
         padding: 0 0 3rem;
+        overflow-x: hidden;
       }
       .top-bar {
         width: 100%;
@@ -30,6 +31,7 @@
         align-items: center;
         gap: 0.8rem;
         margin-bottom: 1.8rem;
+        animation: fadeInDown 0.5s ease both;
       }
       .top-bar .logo-text {
         font-weight: 700;
@@ -55,6 +57,8 @@
         padding: 0.25rem 0.7rem;
         border-radius: 2px;
         margin-bottom: 0.9rem;
+        opacity: 0;
+        animation: fadeIn 0.45s ease 0.3s both;
       }
       h1 {
         font-size: 1.4rem;
@@ -62,12 +66,16 @@
         line-height: 1.25;
         margin-bottom: 0.4rem;
         color: #0a2e14;
+        opacity: 0;
+        animation: fadeInUp 0.55s ease 0.5s both;
       }
       .desc {
         font-size: 0.88rem;
         color: #444;
         line-height: 1.6;
         margin-bottom: 1.6rem;
+        opacity: 0;
+        animation: fadeIn 0.5s ease 0.7s both;
       }
       .desc strong {
         color: #0a2e14;
@@ -78,6 +86,8 @@
         border-radius: 8px;
         padding: 1.4rem 1.4rem 1.6rem;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        opacity: 0;
+        animation: fadeInUp 0.6s ease 0.85s both;
       }
       .section-label {
         font-size: 0.7rem;
@@ -189,6 +199,7 @@
       .career-item.checked {
         border-color: #003e1f;
         background: #edf7f1;
+        animation: checkPop 0.28s ease both;
       }
       .career-item.checked .career-text {
         color: #003e1f;
@@ -206,19 +217,27 @@
         cursor: pointer;
         margin-top: 0.8rem;
         letter-spacing: 0.02em;
-        transition: background 0.15s, transform 0.1s;
+        transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+        position: relative;
+        overflow: hidden;
       }
       .submit-btn:hover {
         background: #005228;
         transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(0, 62, 31, 0.28);
       }
       .submit-btn:active {
         transform: translateY(0);
+        box-shadow: none;
       }
       .submit-btn:disabled {
         background: #999;
         cursor: not-allowed;
         transform: none;
+        box-shadow: none;
+      }
+      .submit-btn.sending {
+        animation: submitPulse 1.2s ease-in-out infinite;
       }
       .required {
         color: #b00;
@@ -230,6 +249,32 @@
         text-align: center;
         margin-top: 1.2rem;
         line-height: 1.5;
+        opacity: 0;
+        animation: fadeIn 0.4s ease 1.15s both;
+      }
+
+      /* ── Keyframes ── */
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+      }
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-12px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes checkPop {
+        0%   { transform: scale(1); }
+        40%  { transform: scale(0.94); }
+        70%  { transform: scale(1.04); }
+        100% { transform: scale(1); }
+      }
+      @keyframes submitPulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(0, 62, 31, 0.35); }
+        50%       { box-shadow: 0 0 0 7px rgba(0, 62, 31, 0); }
       }
     </style>
   </head>
@@ -410,7 +455,13 @@
 
       document.querySelectorAll(".career-item input[type='checkbox']").forEach(function (cb) {
         cb.addEventListener("change", function () {
-          this.closest(".career-item").classList.toggle("checked", this.checked);
+          var item = this.closest(".career-item");
+          item.classList.toggle("checked", this.checked);
+          if (this.checked) {
+            item.style.animation = "none";
+            item.offsetHeight; // reflow
+            item.style.animation = "";
+          }
         });
       });
 
@@ -419,6 +470,7 @@
         var btn = document.getElementById("submit-btn");
         btn.disabled = true;
         btn.textContent = "Enviando...";
+        btn.classList.add("sending");
 
         var carreras = Array.from(
           document.querySelectorAll("input[name='carrera']:checked")
@@ -444,7 +496,8 @@
 
         fetch(STATS_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain" },
           body: JSON.stringify(data),
         })
           .catch(function () {})
